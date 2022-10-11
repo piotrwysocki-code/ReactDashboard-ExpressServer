@@ -225,31 +225,42 @@ app.put("/update_salesprod", (req, res)  => {
   tempNew.productId = bodyNew.productId;
   tempNew.quantity = bodyNew.quantity;
 
-  try {
-    let temp = axios.delete(`http://localhost:43462/api/salesprod`
-    , 
-    {
-      data: tempEdit
-    })
-    .then((re)=>{
-      console.log('hello', re);
-    
-      let resp = axios.put(`http://localhost:43462/api/salesprod`, tempNew)
-      .then((re2)=>{
-        console.log(re2);
-        res.send(re2.data);
-      }).catch(e=>{
+  let allNums = true;
+
+  Object.keys(tempNew).map((key, index)=>{
+    if(isNaN(tempNew[key])){
+      allNums = false;
+    }
+  })
+
+  if(allNums){
+    try {
+      let temp = axios.delete(`http://localhost:43462/api/salesprod`
+      , 
+      {
+        data: tempEdit
+      })
+      .then((re)=>{
+        console.log('hello', re);
+      
+        let resp = axios.put(`http://localhost:43462/api/salesprod`, tempNew)
+        .then((re2)=>{
+          console.log(re2);
+          res.send(re2.data);
+        }).catch(e=>{
+          console.log(e);
+          res.send(e);
+        })
+      }).catch(e =>{
         console.log(e);
         res.send(e);
       })
-    }).catch(e =>{
-      console.log(e);
-      res.send(e);
-    })
-  }catch(error){ 
-    console.log(error);
-    res.send(error);
+    }catch(error){ 
+      console.log(error);
+      res.send(error);
+    }
   }
+
 });
 
 
